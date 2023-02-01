@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kronometre</title>
+
+
+    <style>
+
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+
+        body {
+            background-color: rgb(39, 38, 38);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;            
+            margin: 0;
+            height: 100vh;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        .saat {
+            font-size: 300%;
+            text-align: center;
+            color: #fff;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .button button {
+            border: none;
+            background-color: #ddd;
+            color: #111;
+            font-size: 20px;
+            padding: 10px;
+            width: 130px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="saat">
+            <h1 id="saatText">00:00</h1>
+        </div>
+
+        <div class="button">
+            <button type="button" id="baslat">Başlat</button>
+            &emsp;
+            <button type="button" id="durdur">Durdur</button>
+        </div>
+    </div>
+
+    <script>
+        var tarih = new Date();
+        var saatText = document.querySelector("#saatText");
+        var baslat   = document.querySelector("#baslat");
+        var durdur   = document.querySelector("#durdur");
+        var saat = 0;
+        var dakika = 59;
+
+        var dakika_text = "00";
+        var saat_text   = "00"; 
+        var tetikleyici = 0;
+
+        function getlocalStorage()
+        {
+            var local_saat = localStorage.getItem("saat");
+            var local_dakika = localStorage.getItem("dakika");
+            
+            saat = local_saat;
+            dakika = local_dakika;
+
+            saat_text = "0" + saat.toString();
+            if (dakika < 10)
+            {
+                dakika_text = "0" + dakika.toString();
+            } else {
+                dakika_text = dakika.toString();
+            }
+            saatText.innerText = saat_text + ":" + dakika_text;
+        }
+        getlocalStorage();
+         
+
+        
+
+        function saat_action()
+        {
+            if (tetikleyici == 1)
+            {
+                dakika++;
+
+                if (dakika > 60)
+                {
+                    saat++;
+                    dakika = 0;
+                }
+
+                saat_text = "0" + saat.toString();
+                if (dakika < 10)
+                {
+                    dakika_text = "0" + dakika.toString();
+                } else {
+                    dakika_text = dakika.toString();
+                }
+
+                localStorage.setItem("saat", saat);
+                localStorage.setItem("dakika", dakika);
+
+                saatText.innerText = saat_text + ":" + dakika_text;
+            }
+        }
+        var interval1; 
+
+        function calistir()
+        {
+            interval1 = setInterval("saat_action()", 1000);        
+        }
+        
+        
+        baslat.addEventListener("click", function(){
+            clearInterval(interval1);
+            tetikleyici = 1;
+            calistir();
+        });
+
+        durdur.addEventListener("click", function(){
+            tetikleyici = 0;
+            clearInterval(interval1);
+        });
+        
+    </script>
+    
+</body>
+</html>
